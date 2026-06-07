@@ -1,0 +1,1689 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BARDO — Pedí Online</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #F5C518;
+    --gold-dark: #C9A000;
+    --black: #0A0A0A;
+    --dark: #111111;
+    --card: #181818;
+    --border: #2A2A2A;
+    --text: #ECECEC;
+    --muted: #888;
+    --green: #4CAF50;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--black);
+    border-bottom: 2px solid var(--gold);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    color: var(--gold);
+    letter-spacing: 3px;
+  }
+
+  .cart-btn {
+    background: var(--gold);
+    color: var(--black);
+    border: none;
+    padding: 10px 20px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s;
+  }
+  .cart-btn:hover { background: var(--gold-dark); }
+  .cart-count {
+    background: var(--black);
+    color: var(--gold);
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  /* HERO BANNER */
+  .hero {
+    background: linear-gradient(135deg, #0A0A0A 0%, #1a1200 50%, #0A0A0A 100%);
+    padding: 28px 20px 20px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -40px; left: 50%;
+    transform: translateX(-50%);
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(245,197,24,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-tag {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.6rem;
+    letter-spacing: 4px;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .hero-sub {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.9rem;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+  .hero-sub span { color: var(--gold); font-weight: 600; }
+
+  /* NOTA PAPAS */
+  .papas-note {
+    background: var(--gold);
+    color: var(--black);
+    text-align: center;
+    padding: 10px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 2px;
+  }
+
+  /* SECTION TITLE */
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    letter-spacing: 3px;
+    color: var(--gold);
+    padding: 24px 20px 10px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 4px;
+  }
+
+  /* PRECIO COMBO */
+  .price-strip {
+    display: flex;
+    gap: 0;
+    margin: 0 0 4px;
+    border-bottom: 1px solid var(--border);
+  }
+  .price-chip {
+    flex: 1;
+    text-align: center;
+    padding: 12px 8px;
+    background: var(--card);
+    border-right: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .price-chip:last-child { border-right: none; }
+  .price-chip.active {
+    background: var(--gold);
+    color: var(--black);
+  }
+  .price-chip.active .chip-label,
+  .price-chip.active .chip-price { color: var(--black); }
+  .chip-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    color: var(--muted);
+    display: block;
+  }
+  .chip-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    color: var(--text);
+    display: block;
+    letter-spacing: 1px;
+  }
+
+  /* BURGER CARDS */
+  .menu-grid {
+    padding: 0;
+  }
+
+  .burger-card {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    transition: background 0.15s;
+  }
+  .burger-card:active { background: #202020; }
+
+  .burger-info { flex: 1; }
+  .burger-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .burger-name.special { color: var(--gold); }
+  .burger-desc {
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.4;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    font-family: 'Barlow Condensed', sans-serif;
+  }
+  .burger-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem;
+    color: var(--gold);
+    white-space: nowrap;
+    margin-right: 12px;
+  }
+
+  .add-btn {
+    background: transparent;
+    border: 2px solid var(--gold);
+    color: var(--gold);
+    width: 36px;
+    height: 36px;
+    font-size: 1.4rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.15s;
+    font-family: 'Bebas Neue', sans-serif;
+  }
+  .add-btn:hover, .add-btn:active {
+    background: var(--gold);
+    color: var(--black);
+  }
+  .add-btn.added {
+    background: var(--gold);
+    color: var(--black);
+  }
+
+  /* VEGGIE */
+  .veggie-banner {
+    background: linear-gradient(90deg, #0d1f0d, #0a1a0a);
+    border: 1px solid #2a4a2a;
+    margin: 0 20px 4px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+  }
+  .veggie-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.3rem;
+    letter-spacing: 2px;
+    color: #6bca6b;
+  }
+  .veggie-sub {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem;
+    color: #4a8a4a;
+    letter-spacing: 1px;
+  }
+
+  /* BEBIDAS */
+  .drinks-grid {
+    padding: 0 0 80px;
+  }
+  .drink-row {
+    display: flex;
+    align-items: center;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    gap: 12px;
+  }
+  .drink-icon { font-size: 1.4rem; width: 30px; }
+  .drink-info { flex: 1; }
+  .drink-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 1px;
+  }
+  .drink-sub {
+    font-size: 0.72rem;
+    color: var(--muted);
+    font-family: 'Barlow Condensed', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .drink-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    color: var(--gold);
+    margin-right: 10px;
+  }
+
+  /* CART MODAL */
+  .cart-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 200;
+    align-items: flex-end;
+  }
+  .cart-overlay.open { display: flex; }
+
+  .cart-panel {
+    background: var(--dark);
+    border-top: 3px solid var(--gold);
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding-bottom: 20px;
+    animation: slideUp 0.3s ease;
+  }
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  .cart-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: var(--dark);
+  }
+  .cart-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 3px;
+    color: var(--gold);
+  }
+  .close-btn {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 1.6rem;
+    cursor: pointer;
+    line-height: 1;
+  }
+
+  .cart-items { padding: 10px 0; }
+
+  .cart-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    gap: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .cart-item-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    flex: 1;
+    letter-spacing: 0.5px;
+  }
+  .cart-item-sub {
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+  .cart-item-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    color: var(--gold);
+    margin-right: 8px;
+  }
+  .qty-ctrl {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .qty-btn {
+    background: var(--border);
+    border: none;
+    color: var(--text);
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .qty-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    min-width: 20px;
+    text-align: center;
+  }
+
+  .cart-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--muted);
+    font-family: 'Barlow Condensed', sans-serif;
+    letter-spacing: 1px;
+  }
+  .cart-empty .big { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--border); display: block; }
+
+  .cart-total {
+    padding: 16px 20px;
+    border-top: 2px solid var(--gold);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .total-label { font-family: 'Barlow Condensed', sans-serif; font-size: 0.8rem; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; }
+  .total-amount { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--gold); }
+
+  /* CHECKOUT */
+  .checkout-section { padding: 10px 20px 0; }
+  .checkout-section label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 6px;
+    margin-top: 14px;
+  }
+  .checkout-section input, .checkout-section select, .checkout-section textarea {
+    width: 100%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 12px 14px;
+    font-family: 'Barlow', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .checkout-section input:focus,
+  .checkout-section select:focus,
+  .checkout-section textarea:focus {
+    border-color: var(--gold);
+  }
+  .checkout-section textarea { resize: none; height: 70px; }
+  .checkout-section select option { background: var(--card); }
+
+  .delivery-toggle {
+    display: flex;
+    gap: 0;
+    margin-top: 6px;
+  }
+  .delivery-opt {
+    flex: 1;
+    padding: 12px;
+    text-align: center;
+    background: var(--card);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    color: var(--muted);
+    transition: all 0.2s;
+  }
+  .delivery-opt.active {
+    background: var(--gold);
+    color: var(--black);
+    font-weight: 700;
+    border-color: var(--gold);
+  }
+
+  #address-field { display: none; margin-top: 10px; }
+
+  /* PAGO / TRANSFERENCIA */
+  #transfer-field { display: none; }
+  .transfer-box {
+    margin-top: 10px;
+    background: var(--card);
+    border: 1px solid var(--gold);
+    padding: 12px 14px;
+    font-family: 'Barlow Condensed', sans-serif;
+  }
+  .transfer-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+  }
+  .transfer-row b {
+    color: var(--gold);
+    font-size: 1.15rem;
+    letter-spacing: 1px;
+  }
+  .copy-alias {
+    margin-left: auto;
+    background: transparent;
+    border: 1px solid var(--muted);
+    color: var(--muted);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+    padding: 5px 9px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .copy-alias:hover { border-color: var(--gold); color: var(--gold); }
+  .transfer-total { margin-top: 8px; font-size: 0.9rem; color: var(--text); letter-spacing: 0.5px; }
+  .transfer-total b { color: var(--gold); }
+  .transfer-note { margin-top: 6px; font-size: 0.78rem; color: var(--muted); }
+
+  .wsp-btn {
+    display: block;
+    width: 100%;
+    background: #25D366;
+    color: #fff;
+    border: none;
+    padding: 18px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: 3px;
+    cursor: pointer;
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: background 0.2s;
+  }
+  .wsp-btn:hover { background: #1fb855; }
+  .wsp-icon { font-size: 1.4rem; }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--gold);
+    color: var(--black);
+    padding: 10px 20px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    opacity: 0;
+    transition: all 0.3s;
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 300;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* BOTTOM NAV HINT */
+  .bottom-hint {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 60px;
+    background: linear-gradient(to top, var(--black), transparent);
+    pointer-events: none;
+    z-index: 50;
+  }
+
+  /* DIVIDER */
+  .gold-divider {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 0;
+  }
+
+  /* ===== FEATURE 3 — CONTADOR DE MEDALLONES ===== */
+  .medallones-line {
+    padding: 0 20px 12px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+    color: var(--gold-dark);
+  }
+  .medallones-line #medallonesCount { font-weight: 700; }
+
+  /* ===== FEATURE 1 / 5 — SELECTOR DE TURNOS ===== */
+  .turnos-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 6px;
+  }
+  .turno-btn {
+    background: var(--card);
+    border: 2px solid var(--gold);
+    color: var(--text);
+    padding: 8px 10px;
+    min-height: 56px;            /* touch target cómodo en mobile */
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    gap: 4px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s;
+    font-family: 'Barlow Condensed', sans-serif;
+  }
+  .turno-btn .turno-hora {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.3rem;
+    letter-spacing: 1px;
+    line-height: 1;
+  }
+  .turno-btn .turno-disp {
+    font-size: 0.72rem;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .turno-btn.selected {
+    background: var(--gold);
+    color: var(--black);
+  }
+  .turno-btn.selected .turno-disp,
+  .turno-btn.selected .turno-count { color: var(--black); }
+  .turno-btn.lleno {
+    background: #1c1c1c;
+    border-color: var(--border);
+    color: var(--muted);
+    pointer-events: none;
+  }
+  .turno-btn.lleno .turno-disp { color: #e53935; font-weight: 700; }
+  .turno-bar {
+    display: block;
+    height: 5px;
+    width: 100%;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .turno-bar-fill {
+    display: block;
+    height: 100%;
+    transition: width 0.25s;
+  }
+  .turno-count {
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+    text-align: right;
+  }
+  .turnos-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 18px;
+    color: var(--muted);
+    font-family: 'Barlow Condensed', sans-serif;
+    letter-spacing: 1px;
+  }
+
+  /* ===== FEATURE 2 — PANEL ADMIN ===== */
+  .admin-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.92);
+    z-index: 250;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .admin-overlay.open { display: flex; }
+
+  .admin-pin-box {
+    background: var(--dark);
+    border: 2px solid var(--gold);
+    padding: 28px 24px;
+    width: 100%;
+    max-width: 320px;
+    text-align: center;
+  }
+  .admin-pin-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.9rem;
+    letter-spacing: 3px;
+    color: var(--gold);
+  }
+  .admin-pin-sub {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin: 6px 0 16px;
+  }
+  .admin-pin-input {
+    width: 100%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 12px;
+    text-align: center;
+    padding: 12px;
+    outline: none;
+  }
+  .admin-pin-input:focus { border-color: var(--gold); }
+  .admin-pin-btn {
+    width: 100%;
+    background: var(--gold);
+    color: var(--black);
+    border: none;
+    padding: 14px;
+    margin-top: 16px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.3rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+  }
+  .admin-pin-cancel {
+    width: 100%;
+    background: none;
+    border: none;
+    color: var(--muted);
+    padding: 12px 0 0;
+    margin-top: 8px;
+    font-family: 'Barlow Condensed', sans-serif;
+    letter-spacing: 1px;
+    cursor: pointer;
+  }
+
+  .admin-panel {
+    background: var(--dark);
+    border: 2px solid var(--gold);
+    width: 100%;
+    max-width: 480px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+  }
+  .admin-header {
+    padding: 18px 20px;
+    border-bottom: 2px solid var(--gold);
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .admin-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 3px;
+    color: var(--gold);
+  }
+  .admin-date {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.9rem;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+  .admin-table {
+    overflow-y: auto;
+    padding: 4px 0;
+  }
+  .admin-row {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 0.8fr 1.5fr;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-bottom: 1px solid var(--border);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.95rem;
+  }
+  .admin-row-head {
+    color: var(--muted);
+    font-size: 0.7rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--gold);
+  }
+  .admin-franja {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+    color: var(--text);
+  }
+  .admin-liberar {
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    padding: 7px 8px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .admin-liberar:hover { background: var(--gold); color: var(--black); }
+  .admin-lleno {
+    color: #e53935;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+  }
+  .admin-actions {
+    padding: 14px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .admin-reset {
+    background: #e53935;
+    color: #fff;
+    border: none;
+    padding: 14px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+  }
+  .admin-close {
+    background: var(--card);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 12px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    letter-spacing: 2px;
+    cursor: pointer;
+  }
+
+  /* ===== COMPROBANTE DE TRANSFERENCIA ===== */
+  .comprobante-box {
+    margin-top: 12px;
+    background: #0e0e0e;
+    border: 2px solid var(--gold);
+    padding: 18px 16px 14px;
+    font-family: 'Barlow Condensed', sans-serif;
+  }
+  .comprobante-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+  .comprobante-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem;
+    letter-spacing: 3px;
+    color: var(--gold);
+  }
+  .comprobante-num {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.8rem;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+  .comprobante-local {
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .comprobante-items {
+    font-size: 0.88rem;
+    color: var(--text);
+    line-height: 1.8;
+    letter-spacing: 0.3px;
+  }
+  .comprobante-item-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .comprobante-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 10px 0;
+  }
+  .comprobante-total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .comprobante-total-amt {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    color: var(--gold);
+    letter-spacing: 2px;
+  }
+  .comprobante-alias-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+  }
+  .comprobante-alias-row b {
+    color: var(--gold);
+    font-size: 1rem;
+    letter-spacing: 1px;
+  }
+  .comprobante-footer {
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.3px;
+    line-height: 1.4;
+    border-top: 1px solid var(--border);
+    padding-top: 8px;
+    margin-top: 4px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo" onclick="onLogoTap()" style="cursor:pointer;user-select:none;-webkit-user-select:none;">BARDO</div>
+  <button class="cart-btn" onclick="openCart()">
+    🛒 <span>MI PEDIDO</span>
+    <div class="cart-count" id="cartCount">0</div>
+  </button>
+</header>
+
+<div class="hero">
+  <div class="hero-tag">📍 Pedí desde donde estés</div>
+  <div class="hero-title">PEDÍ ONLINE</div>
+  <div class="hero-sub">Retiro en local o <span>delivery</span></div>
+</div>
+
+<div class="papas-note">🍟 NUESTRAS BURGAS VIENEN CON PAPAS, OBVIO!</div>
+
+<!-- SELECTOR DE TAMAÑO -->
+<div class="section-title">BURGAS</div>
+<div class="price-strip" id="sizeStrip">
+  <div class="price-chip active" onclick="setSize('simple',12000,this)">
+    <span class="chip-label">SIMPLE</span>
+    <span class="chip-price">$12.000</span>
+  </div>
+  <div class="price-chip" onclick="setSize('doble',16000,this)">
+    <span class="chip-label">DOBLE</span>
+    <span class="chip-price">$16.000</span>
+  </div>
+  <div class="price-chip" onclick="setSize('triple',20000,this)">
+    <span class="chip-label">TRIPLE</span>
+    <span class="chip-price">$20.000</span>
+  </div>
+</div>
+
+<div class="menu-grid" id="burgasGrid"></div>
+
+<div class="gold-divider"></div>
+
+<!-- VEGGIE -->
+<div class="veggie-banner" onclick="addVeggie()">
+  <div>
+    <div class="veggie-label">🥬 OPCIÓN VEGGIE</div>
+    <div class="veggie-sub">CONSULTANOS POR LA OPCIÓN SIN CARNE</div>
+  </div>
+  <div style="color:#6bca6b;font-family:'Bebas Neue',sans-serif;font-size:1.1rem;">+ AGREGAR</div>
+</div>
+
+<div class="gold-divider"></div>
+
+<!-- BEBIDAS -->
+<div class="section-title">BEBIDAS</div>
+<div class="drinks-grid" id="drinksGrid"></div>
+
+<!-- BOTTOM FADE -->
+<div class="bottom-hint"></div>
+
+<!-- CARRITO -->
+<div class="cart-overlay" id="cartOverlay">
+  <div class="cart-panel">
+    <div class="cart-header">
+      <div class="cart-title">TU PEDIDO</div>
+      <button class="close-btn" onclick="closeCart()">✕</button>
+    </div>
+
+    <div class="cart-items" id="cartItems">
+      <div class="cart-empty">
+        <span class="big">🍔</span>
+        TU CARRITO ESTÁ VACÍO
+      </div>
+    </div>
+
+    <div class="cart-total" id="cartTotal" style="display:none">
+      <div>
+        <div class="total-label">TOTAL</div>
+        <div class="total-amount" id="totalAmount">$0</div>
+      </div>
+    </div>
+
+    <div class="medallones-line" id="medallonesLine" style="display:none">
+      🔥 Este pedido ocupa <span id="medallonesCount">0</span> medallones en plancha
+    </div>
+
+    <div class="checkout-section" id="checkoutForm" style="display:none">
+
+      <label>¿CÓMO QUERÉS RECIBIRLO?</label>
+      <div class="delivery-toggle">
+        <div class="delivery-opt active" onclick="setDelivery('retiro',this)">🏃 RETIRO EN LOCAL</div>
+        <div class="delivery-opt" onclick="setDelivery('delivery',this)">🛵 DELIVERY</div>
+      </div>
+
+      <div id="address-field">
+        <label>DIRECCIÓN</label>
+        <input type="text" id="address" placeholder="Calle, número, piso...">
+      </div>
+
+      <label>TU NOMBRE</label>
+      <input type="text" id="customerName" placeholder="¿Cómo te llamás?">
+
+      <label>TELÉFONO (opcional)</label>
+      <input type="tel" id="customerPhone" placeholder="+54 9 ...">
+
+      <label>ACLARACIONES</label>
+      <textarea id="notes" placeholder="Sin cebolla, sin picante, alergias..."></textarea>
+
+      <label>ELEGÍ TU TURNO</label>
+      <div class="turnos-grid" id="turnosGrid"></div>
+
+      <label>¿CÓMO PAGÁS?</label>
+      <div class="delivery-toggle">
+        <div class="delivery-opt active" onclick="setPago('efectivo',this)">🪙 EFECTIVO</div>
+        <div class="delivery-opt" onclick="setPago('transferencia',this)">🏦 TRANSFERENCIA</div>
+      </div>
+
+      <div id="transfer-field">
+        <div class="transfer-box">
+          <div class="transfer-row">
+            <span>Transferí a</span>
+            <b id="aliasText">Bardo.esquel</b>
+            <button type="button" class="copy-alias" onclick="copiarAlias()">COPIAR</button>
+          </div>
+          <div class="transfer-total">Total a transferir: <b id="transferTotal">$0</b></div>
+          <div class="transfer-note">Después mandanos el comprobante de la transferencia por WhatsApp 🙏</div>
+        </div>
+
+        <!-- COMPROBANTE AUTOMÁTICO -->
+        <div class="comprobante-box" id="comprobanteBox">
+          <div class="comprobante-header">
+            <span class="comprobante-title">COMPROBANTE DE PAGO</span>
+            <span class="comprobante-num" id="comprobanteNum">#000000</span>
+          </div>
+          <div class="comprobante-local">🍔 BARDO HAMBURGUESERÍA — ESQUEL</div>
+          <div class="comprobante-items" id="comprobanteItems"></div>
+          <div class="comprobante-divider"></div>
+          <div class="comprobante-total-row">
+            <span>TOTAL A TRANSFERIR</span>
+            <span class="comprobante-total-amt" id="comprobanteTotalAmt">$0</span>
+          </div>
+          <div class="comprobante-alias-row">
+            <span>ALIAS</span>
+            <b id="comprobanteAlias">Bardo.esquel</b>
+            <button type="button" class="copy-alias" onclick="copiarAlias()">COPIAR</button>
+          </div>
+          <div class="comprobante-footer">Realizá la transferencia y envianos el comprobante por WhatsApp junto con tu pedido 🙏</div>
+        </div>
+      </div>
+
+      <button class="wsp-btn" onclick="sendWhatsApp()">
+        <span class="wsp-icon">💬</span>
+        ENVIAR PEDIDO POR WHATSAPP
+      </button>
+
+    </div>
+  </div>
+</div>
+
+<!-- PANEL ADMIN — INGRESO PIN -->
+<div class="admin-overlay" id="pinOverlay">
+  <div class="admin-pin-box">
+    <div class="admin-pin-title">PANEL ADMIN</div>
+    <div class="admin-pin-sub">Ingresá el PIN</div>
+    <input type="password" inputmode="numeric" maxlength="4" id="pinInput" class="admin-pin-input" placeholder="••••">
+    <button class="admin-pin-btn" onclick="validarPin()">ENTRAR</button>
+    <button class="admin-pin-cancel" onclick="cerrarPin()">Cancelar</button>
+  </div>
+</div>
+
+<!-- PANEL ADMIN — TABLERO -->
+<div class="admin-overlay" id="adminOverlay">
+  <div class="admin-panel">
+    <div class="admin-header">
+      <div class="admin-title">PANEL ADMIN</div>
+      <div class="admin-date" id="adminDate"></div>
+    </div>
+    <div class="admin-table" id="adminTable"></div>
+    <div class="admin-actions">
+      <button class="admin-reset" onclick="resetearDia()">RESETEAR DÍA COMPLETO</button>
+      <button class="admin-close" onclick="cerrarPanelAdmin()">CERRAR</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ===================== CONFIG =====================
+const WHATSAPP_NUMERO        = "5492945554920"; // ⚠️ CONFIRMAR: nº al que llegan los pedidos
+const MEDALLONES_POR_FRANJA  = 15;
+const PIN_ADMIN              = "0000";
+const ALIAS_TRANSFERENCIA    = "Bardo.esquel"; // alias para pagos por transferencia
+
+// Ventanas de servicio. Día JS: 0=domingo, 1=lunes ... 6=sábado.
+// Mediodía: lunes a sábado (los domingos NO). Noche: todos los días.
+// Delivery: por ahora SOLO a la noche.
+const SERVICIOS = [
+  { id:'mediodia', apertura:'12:00', cierre:'14:30', dias:[1,2,3,4,5,6],   delivery:false },
+  { id:'noche',    apertura:'20:00', cierre:'23:45', dias:[0,1,2,3,4,5,6], delivery:true  },
+];
+
+// DATA
+const burgas = [
+  { id:'cheese', name:'CHEESE', desc:'Medallón de carne, cheddar y mayo casera.' },
+  { id:'clasica', name:'CLÁSICA', desc:'Medallón de carne, cheddar, lechuga, tomate y pepinillos. Con salsita de la casa.' },
+  { id:'siempre', name:'LA DE SIEMPRE', desc:'Medallón de carne, cheddar, panceta y mayo casera.' },
+  { id:'onion', name:'ONION BACON', desc:'Carne, cheddar, cebollita caramelizada, panceta, pepinillos y mayo.' },
+  { id:'oklahoma', name:'OKLAHOMA', desc:'Medallón de carne, cebolla smasheada, cheddar y mayo casera.' },
+  { id:'oklafort', name:'OKLAFORT', desc:'Carne, cebolla smasheada. Roque con un toque distinto.', special: true },
+  { id:'crispy', name:'CRISPY', desc:'Medallón de carne, cheddar, panceta, cebolla crispy y barbacoa.' },
+  { id:'chingona', name:'CHINGONA', desc:'Carne, cheddar, guacamole con panceta, tomate y mayo picante.' },
+  { id:'poshito', name:'POSHITO 🐔', desc:'200gr de pollo crispy con salsa picante, lechuga con mayo, cheddar y pepino.', fixed: 15000, special: true },
+];
+
+const drinks = [
+  { id:'gaseosa-botella', name:'GASEOSA / AGUA', sub:'Línea Coca — Botella', price:3500, icon:'🥤' },
+  { id:'gaseosa-lata', name:'GASEOSA / AGUA', sub:'Línea Coca — Lata', price:2500, icon:'🥫' },
+  { id:'birra-art', name:'BIRRA ARTESANAL', sub:'Quinto Elemento: Scottish, APA, IPA, Porter, Hemp IPA, OCBA Sativa Pale Ale', price:6000, icon:'🍺' },
+  { id:'birra-ind', name:'BIRRA INDUSTRIAL', sub:'Corona / Stella', price:5000, icon:'🍺' },
+  { id:'fernet', name:'FERNET / GIN', sub:'Hielo + Fernet o Gin + Latita — Pinta', price:6000, icon:'🥃' },
+];
+
+let currentSize = 'simple';
+let currentSizePrice = 12000;
+let cart = [];
+let deliveryMode = 'retiro';
+
+function setSize(size, price, el) {
+  currentSize = size;
+  currentSizePrice = price;
+  document.querySelectorAll('.price-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function buildBurgas() {
+  const grid = document.getElementById('burgasGrid');
+  grid.innerHTML = burgas.map(b => `
+    <div class="burger-card" id="card-${b.id}">
+      <div class="burger-info">
+        <div class="burger-name ${b.special ? 'special' : ''}">${b.name}</div>
+        <div class="burger-desc">${b.desc}</div>
+      </div>
+      ${b.fixed ? `<div class="burger-price">$${b.fixed.toLocaleString('es-AR')}</div>` : ''}
+      <button class="add-btn" id="btn-${b.id}" onclick="addBurga('${b.id}')">+</button>
+    </div>
+  `).join('');
+}
+
+function buildDrinks() {
+  const grid = document.getElementById('drinksGrid');
+  grid.innerHTML = drinks.map(d => `
+    <div class="drink-row">
+      <div class="drink-icon">${d.icon}</div>
+      <div class="drink-info">
+        <div class="drink-name">${d.name}</div>
+        <div class="drink-sub">${d.sub}</div>
+      </div>
+      <div class="drink-price">$${d.price.toLocaleString('es-AR')}</div>
+      <button class="add-btn" onclick="addDrink('${d.id}')">+</button>
+    </div>
+  `).join('');
+}
+
+function addBurga(id) {
+  const b = burgas.find(x => x.id === id);
+  const price = b.fixed || currentSizePrice;
+  const sizeName = b.fixed ? '' : ` (${currentSize.toUpperCase()})`;
+  addToCart(id + '-' + (b.fixed ? 'fixed' : currentSize), b.name + sizeName, price);
+  showToast(`${b.name}${sizeName} agregada 🔥`);
+}
+
+function addDrink(id) {
+  const d = drinks.find(x => x.id === id);
+  addToCart('drink-' + id, d.name + ' — ' + d.sub.split(',')[0], d.price);
+  showToast(`${d.name} agregado 🥤`);
+}
+
+function addVeggie() {
+  addToCart('veggie', '🥬 OPCIÓN VEGGIE', 0);
+  showToast('Veggie agregado — te consultamos el precio');
+}
+
+function addToCart(id, name, price) {
+  const existing = cart.find(x => x.id === id);
+  if (existing) {
+    existing.qty++;
+  } else {
+    cart.push({ id, name, price, qty: 1 });
+  }
+  updateCartUI();
+}
+
+function updateCartUI() {
+  const count = cart.reduce((s, i) => s + i.qty, 0);
+  document.getElementById('cartCount').textContent = count;
+}
+
+function renderCart() {
+  const container = document.getElementById('cartItems');
+  const totalEl = document.getElementById('cartTotal');
+  const formEl = document.getElementById('checkoutForm');
+
+  if (cart.length === 0) {
+    container.innerHTML = `<div class="cart-empty"><span class="big">🍔</span>TU CARRITO ESTÁ VACÍO</div>`;
+    totalEl.style.display = 'none';
+    formEl.style.display = 'none';
+    document.getElementById('medallonesLine').style.display = 'none';
+    return;
+  }
+
+  container.innerHTML = cart.map(item => `
+    <div class="cart-item">
+      <div class="cart-item-info" style="flex:1">
+        <div class="cart-item-name">${item.name}</div>
+        ${item.price === 0 ? '<div class="cart-item-sub" style="color:#6bca6b">Precio a confirmar</div>' : ''}
+      </div>
+      <div class="cart-item-price">${item.price ? '$' + (item.price * item.qty).toLocaleString('es-AR') : ''}</div>
+      <div class="qty-ctrl">
+        <button class="qty-btn" onclick="changeQty('${item.id}', -1)">−</button>
+        <div class="qty-num">${item.qty}</div>
+        <button class="qty-btn" onclick="changeQty('${item.id}', 1)">+</button>
+      </div>
+    </div>
+  `).join('');
+
+  const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+  document.getElementById('totalAmount').textContent = '$' + total.toLocaleString('es-AR');
+  totalEl.style.display = 'flex';
+  formEl.style.display = 'block';
+
+  // FEATURE 3 — contador de medallones en tiempo real
+  const ml = document.getElementById('medallonesLine');
+  document.getElementById('medallonesCount').textContent = totalMedallones();
+  ml.style.display = 'block';
+
+  // FEATURE 1 — refrescar el selector de turnos con el estado actual
+  renderTurnos();
+
+  // mantener el total a transferir en sync
+  actualizarTransferTotal();
+}
+
+function changeQty(id, delta) {
+  const idx = cart.findIndex(x => x.id === id);
+  if (idx === -1) return;
+  cart[idx].qty += delta;
+  if (cart[idx].qty <= 0) cart.splice(idx, 1);
+  updateCartUI();
+  renderCart();
+}
+
+function openCart() {
+  renderCart();
+  document.getElementById('cartOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCart() {
+  document.getElementById('cartOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function setDelivery(mode, el) {
+  deliveryMode = mode;
+  // scope al grupo de este toggle (para no pisar el toggle de pago)
+  el.parentElement.querySelectorAll('.delivery-opt').forEach(x => x.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('address-field').style.display = mode === 'delivery' ? 'block' : 'none';
+  renderTurnos(); // las franjas dependen del modo (delivery = solo a la noche)
+}
+
+// MEDIO DE PAGO (efectivo / transferencia)
+let metodoPago = 'efectivo';
+function setPago(metodo, el) {
+  metodoPago = metodo;
+  el.parentElement.querySelectorAll('.delivery-opt').forEach(x => x.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('transfer-field').style.display = metodo === 'transferencia' ? 'block' : 'none';
+  if (metodo === 'transferencia') actualizarTransferTotal();
+}
+function actualizarTransferTotal() {
+  const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+  const el = document.getElementById('transferTotal');
+  if (el) el.textContent = '$' + total.toLocaleString('es-AR');
+}
+function copiarAlias() {
+  try {
+    navigator.clipboard.writeText(ALIAS_TRANSFERENCIA);
+    showToast('Alias copiado: ' + ALIAS_TRANSFERENCIA);
+  } catch (e) {
+    showToast('Alias: ' + ALIAS_TRANSFERENCIA);
+  }
+}
+
+function sendWhatsApp() {
+  const name = document.getElementById('customerName').value.trim();
+  const phone = document.getElementById('customerPhone').value.trim();
+  const address = document.getElementById('address').value.trim();
+  const notes = document.getElementById('notes').value.trim();
+
+  // FEATURE 4 — validaciones en orden estricto
+  if (cart.length === 0) { showToast('Agregá algo al pedido primero'); return; }
+  if (!name) { showToast('Ponele tu nombre al pedido 😄'); return; }
+  if (deliveryMode === 'delivery' && !address) { showToast('¿A dónde te lo mandamos? 📍'); return; }
+  if (!franjaSeleccionada) { showToast('Elegí tu turno primero ⏰'); return; }
+  if (!franjasDisponibles().includes(franjaSeleccionada)) {
+    showToast('Esa franja no está disponible, elegí otra');
+    franjaSeleccionada = null;
+    renderTurnos();
+    return;
+  }
+
+  // Recalcular medallones del pedido y distribuirlos EN TIEMPO REAL.
+  // Si la franja elegida no tiene lugar para todo el pedido, el sobrante
+  // desborda a las franjas siguientes (ej: doble con 1 lugar -> 1 en 22:00 y 1 en 22:15).
+  const pedidoMedallones = totalMedallones();
+  const distribucion = distribuirMedallones(franjaSeleccionada, pedidoMedallones);
+  if (!distribucion) {
+    showToast('No hay lugar suficiente para todo el pedido, elegí otro turno');
+    franjaSeleccionada = null;
+    renderTurnos();
+    return;
+  }
+
+  const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+
+  const nroComprobante = Date.now().toString().slice(-6);
+  let msg = `🍔 *NUEVO PEDIDO — BARDO*\n`;
+  msg += `📄 Comprobante #${nroComprobante}\n\n`;
+  msg += `👤 *Nombre:* ${name}\n`;
+  if (phone) msg += `📱 *Tel:* ${phone}\n`;
+  msg += `📦 *Modalidad:* ${deliveryMode === 'retiro' ? 'Retiro en local' : `Delivery — ${address}`}\n`;
+  msg += `⏰ *Turno:* ${franjaSeleccionada} hs\n\n`;
+  msg += `*─── PEDIDO ───*\n`;
+  cart.forEach(item => {
+    msg += `▸ ${item.qty}x ${item.name}`;
+    if (item.price) msg += ` — $${(item.price * item.qty).toLocaleString('es-AR')}`;
+    msg += `\n`;
+  });
+  msg += `\n*💰 TOTAL: $${total.toLocaleString('es-AR')}*`;
+  msg += `\n💳 *Pago:* ${metodoPago === 'transferencia' ? 'Transferencia' : 'Efectivo'}`;
+  if (metodoPago === 'transferencia') {
+    msg += `\n🏦 *Alias:* ${ALIAS_TRANSFERENCIA}`;
+    msg += `\n_Transferí el total y mandanos el comprobante por acá 🙏_`;
+  }
+  if (notes) msg += `\n\n📝 *Aclaraciones:* ${notes}`;
+  msg += `\n\n_(Pedido generado desde bardo.com.ar)_`;
+
+  // Hay lugar: aplicar la distribución a localStorage ANTES de abrir WhatsApp
+  // (puede sumar a más de una franja si el pedido desbordó)
+  const turnos = leerTurnos();
+  for (const f in distribucion) {
+    turnos[f] = (turnos[f] || 0) + distribucion[f];
+  }
+  guardarTurnos(turnos);
+
+  // FASE 2 — enviar el pedido al servidor de impresión local (fire-and-forget)
+  const pedidoData = {
+    nombre: name,
+    telefono: phone,
+    modalidad: deliveryMode,
+    direccion: address,
+    turno: franjaSeleccionada,
+    items: cart.map(i => ({ nombre: i.name, qty: i.qty, precio: i.price })),
+    total: total,
+    pago: metodoPago,
+    alias: metodoPago === 'transferencia' ? ALIAS_TRANSFERENCIA : '',
+    comprobante: nroComprobante,
+    aclaraciones: notes,
+    medallones: pedidoMedallones,
+    timestamp: new Date().toISOString()
+  };
+  try {
+    fetch('http://localhost:3001/nuevo-pedido', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(pedidoData)
+    }).catch(() => {}); // silencioso: si el servidor no está, el pedido por WhatsApp se envía igual
+  } catch (e) {}
+
+  const url = `https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(msg)}`;
+  window.open(url, '_blank');
+
+  // evitar que un segundo toque sume medallones de nuevo: hay que reelegir turno
+  franjaSeleccionada = null;
+  renderTurnos();
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+/* ============================================================
+   FEATURE 1 — FRANJAS HORARIAS + CAPACIDAD EN TIEMPO REAL
+   ============================================================ */
+
+let franjaSeleccionada = null;
+
+// medallones que ocupa UNA unidad de cada item, según su id de carrito
+function medallonesPorUnidad(id) {
+  if (id.startsWith('drink-')) return 0;   // bebidas = 0
+  if (id === 'veggie')         return 1;   // veggie ocupa plancha = 1
+  if (id.startsWith('poshito')) return 2;  // poshito (pollo) = 2
+  if (id.endsWith('-simple'))  return 1;   // simple = 1
+  if (id.endsWith('-doble'))   return 2;   // doble  = 2
+  if (id.endsWith('-triple'))  return 3;   // triple = 3
+  return 0;
+}
+
+function totalMedallones() {
+  return cart.reduce((s, i) => s + medallonesPorUnidad(i.id) * i.qty, 0);
+}
+
+// servicios activos hoy según el día de la semana
+function serviciosDeHoy() {
+  const dia = new Date().getDay(); // 0=domingo
+  return SERVICIOS.filter(s => s.dias.includes(dia));
+}
+
+// genera las franjas de 15 min de los servicios de hoy: ["12:00",...,"14:30","20:00",...,"23:45"]
+// soloDelivery=true devuelve únicamente las franjas con delivery (noche)
+function generarFranjas(soloDelivery) {
+  const franjas = [];
+  serviciosDeHoy()
+    .filter(s => !soloDelivery || s.delivery)
+    .forEach(s => {
+      const [ah, am] = s.apertura.split(':').map(Number);
+      const [ch, cm] = s.cierre.split(':').map(Number);
+      let min = ah * 60 + am;
+      const fin = ch * 60 + cm;
+      while (min <= fin) {
+        franjas.push(String(Math.floor(min / 60)).padStart(2, '0') + ':' + String(min % 60).padStart(2, '0'));
+        min += 15;
+      }
+    });
+  return franjas;
+}
+
+// franjas que el cliente puede elegir según el modo (retiro = todas; delivery = solo noche)
+function franjasDisponibles() {
+  return generarFranjas(deliveryMode === 'delivery');
+}
+
+// devuelve la franja 15 min posterior si existe en las disponibles; si no, null
+function siguienteFranjaContigua(franja, franjas) {
+  const [h, m] = franja.split(':').map(Number);
+  const min = h * 60 + m + 15;
+  const sig = String(Math.floor(min / 60)).padStart(2, '0') + ':' + String(min % 60).padStart(2, '0');
+  return franjas.includes(sig) ? sig : null;
+}
+
+// Reparte los medallones del pedido a partir de la franja elegida.
+// Llena esa franja y, si sobra, DESBORDA a las franjas siguientes contiguas.
+// Ej: pedís una doble (2) y en las 22:00 queda 1 lugar -> 1 en 22:00 y 1 en 22:15.
+// Devuelve { "22:00":1, "22:15":1 } (cuánto sumar a cada franja) o null si no entra.
+function distribuirMedallones(franjaInicio, medallones) {
+  const franjas = franjasDisponibles();
+  if (!franjas.includes(franjaInicio)) return null;
+  const turnos = leerTurnos();
+  const dist = {};
+  let restante = medallones;
+  let actual = franjaInicio;
+  while (restante > 0) {
+    const ocupados = (turnos[actual] || 0) + (dist[actual] || 0);
+    const libre = MEDALLONES_POR_FRANJA - ocupados;
+    if (libre > 0) {
+      const poner = Math.min(libre, restante);
+      dist[actual] = (dist[actual] || 0) + poner;
+      restante -= poner;
+    }
+    if (restante === 0) break;
+    const sig = siguienteFranjaContigua(actual, franjas);
+    if (!sig) return null;   // no hay más franjas contiguas con lugar
+    actual = sig;
+  }
+  return dist;
+}
+
+/* --- Estado de turnos en localStorage. TODO acceso va envuelto en
+   try/catch: si localStorage falla, el sistema sigue funcionando con
+   todas las franjas disponibles (sin restricciones). --- */
+function fechaHoy() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+function claveTurnos() { return 'bardo_turnos_' + fechaHoy(); }
+
+function leerTurnos() {
+  try {
+    const raw = localStorage.getItem(claveTurnos());
+    return raw ? JSON.parse(raw) : {};
+  } catch (e) {
+    return {}; // sin localStorage -> todas las franjas en 0
+  }
+}
+function guardarTurnos(obj) {
+  try { localStorage.setItem(claveTurnos(), JSON.stringify(obj)); } catch (e) {}
+}
+
+function horaActualMin() {
+  const d = new Date();
+  return d.getHours() * 60 + d.getMinutes();
+}
+
+function seleccionarTurno(franja, el) {
+  franjaSeleccionada = franja;
+  document.querySelectorAll('.turno-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function renderTurnos() {
+  const grid = document.getElementById('turnosGrid');
+  if (!grid) return;
+  const franjas = franjasDisponibles();       // según día + modo (retiro/delivery)
+  const turnos = leerTurnos();
+  const ahora = horaActualMin();
+
+  // si la franja elegida ya no está disponible (cambió de modo/día o ya pasó), la soltamos
+  if (franjaSeleccionada && !franjas.includes(franjaSeleccionada)) franjaSeleccionada = null;
+
+  let visibles = 0;
+  const botones = franjas.map(f => {
+    const [fh, fm] = f.split(':').map(Number);
+    const franjaMin = fh * 60 + fm;
+    const ocupados = turnos[f] || 0;
+    const lleno = ocupados >= MEDALLONES_POR_FRANJA;
+    const pasada = ahora > franjaMin; // franja pasada -> ocultar
+    if (!pasada) visibles++;
+    const disponibles = Math.max(0, MEDALLONES_POR_FRANJA - ocupados);
+    const pct = Math.min(100, Math.round((ocupados / MEDALLONES_POR_FRANJA) * 100));
+    // FEATURE 5 — color de la barra de ocupación
+    let barColor = 'var(--gold)';
+    if (lleno) barColor = '#e53935';          // 100% -> rojo
+    else if (pct >= 80) barColor = '#ff9800'; // >=80% -> naranja
+    const sel = (franjaSeleccionada === f && !lleno && !pasada) ? ' selected' : '';
+    const cls = 'turno-btn' + (lleno ? ' lleno' : '') + sel;
+    const style = pasada ? 'display:none;' : '';
+    const handler = (lleno || pasada) ? '' : 'onclick="seleccionarTurno(\'' + f + '\', this)"';
+    const disp = lleno ? 'LLENO' : (disponibles + ' disponibles');
+    return '<button type="button" class="' + cls + '" style="' + style + '" ' + handler + '>' +
+             '<span class="turno-hora">' + f + '</span>' +
+             '<span class="turno-disp">' + disp + '</span>' +
+             '<span class="turno-bar"><span class="turno-bar-fill" style="width:' + pct + '%;background:' + barColor + ';"></span></span>' +
+             '<span class="turno-count">' + ocupados + '/' + MEDALLONES_POR_FRANJA + '</span>' +
+           '</button>';
+  }).join('');
+
+  grid.innerHTML = visibles === 0
+    ? '<div class="turnos-empty">No hay turnos disponibles por hoy 🌙</div>'
+    : botones;
+}
+
+/* ============================================================
+   FEATURE 2 — PANEL DE ADMINISTRACIÓN
+   ============================================================ */
+
+// triple tap rápido en el logo BARDO
+let tapCount = 0, tapTimer = null;
+function onLogoTap() {
+  tapCount++;
+  if (tapTimer) clearTimeout(tapTimer);
+  tapTimer = setTimeout(() => { tapCount = 0; }, 600);
+  if (tapCount >= 3) {
+    tapCount = 0;
+    clearTimeout(tapTimer);
+    pedirPinAdmin();
+  }
+}
+
+function pedirPinAdmin() {
+  const inp = document.getElementById('pinInput');
+  inp.value = '';
+  document.getElementById('pinOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => inp.focus(), 100);
+}
+function cerrarPin() {
+  document.getElementById('pinOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function validarPin() {
+  const val = document.getElementById('pinInput').value.trim();
+  if (val !== PIN_ADMIN) { showToast('PIN incorrecto'); return; }
+  cerrarPin();
+  abrirPanelAdmin();
+}
+
+function abrirPanelAdmin() {
+  document.getElementById('adminDate').textContent = new Date().toLocaleDateString('es-AR');
+  renderAdminTable();
+  document.getElementById('adminOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function cerrarPanelAdmin() {
+  document.getElementById('adminOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function renderAdminTable() {
+  const cont = document.getElementById('adminTable');
+  const franjas = generarFranjas(false); // todas las franjas de hoy (mediodía + noche)
+  const turnos = leerTurnos();
+  let html = '<div class="admin-row admin-row-head"><div>FRANJA</div><div>OCUP.</div><div>MAX</div><div>ACCIÓN</div></div>';
+  html += franjas.map(f => {
+    const ocup = turnos[f] || 0;
+    const lleno = ocup >= MEDALLONES_POR_FRANJA;
+    const accion = lleno
+      ? '<span class="admin-lleno">LLENO</span>'
+      : '<button class="admin-liberar" onclick="liberarFranja(\'' + f + '\')">LIBERAR</button>';
+    return '<div class="admin-row">' +
+             '<div class="admin-franja">' + f + '</div>' +
+             '<div>' + ocup + '</div>' +
+             '<div>' + MEDALLONES_POR_FRANJA + '</div>' +
+             '<div>' + accion + '</div>' +
+           '</div>';
+  }).join('');
+  cont.innerHTML = html;
+}
+
+function liberarFranja(f) {
+  const turnos = leerTurnos();
+  turnos[f] = 0;               // poner esa franja en 0 medallones
+  guardarTurnos(turnos);
+  renderAdminTable();
+  showToast('Franja ' + f + ' liberada');
+}
+
+function resetearDia() {
+  if (!confirm('¿Seguro? Esto borra todos los turnos de hoy.')) return;
+  try { localStorage.removeItem(claveTurnos()); } catch (e) {}
+  renderAdminTable();
+  showToast('Día reseteado');
+}
+
+/* ===== LISTENERS / INIT ===== */
+
+document.getElementById('cartOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeCart();
+});
+
+// Enter dentro del PIN confirma
+document.getElementById('pinInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') validarPin();
+});
+// click fuera del cuadro de PIN lo cierra
+document.getElementById('pinOverlay').addEventListener('click', function(e) {
+  if (e.target === this) cerrarPin();
+});
+
+document.getElementById('aliasText').textContent = ALIAS_TRANSFERENCIA;
+buildBurgas();
+buildDrinks();
+</script>
+</body>
+</html>
